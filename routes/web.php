@@ -19,7 +19,7 @@ use PhpParser\Node\Expr\PostInc;
 Route::get('/posts',[PostController::class,'index'])->name('posts.index');
 Route::get('/posts/create',[PostController::class,'create'])->name('posts.create');
 Route::post('/posts/store',[PostController::class,'store'])->name('posts.store');
-Route::post('/posts/search',[PostController::class,'search'])->name('posts.search');
+Route::any('/posts/search',[PostController::class,'search'])->name('posts.search');
 
 Route::post('/posts/{id}',[CommentsController::class,'storeComment'])->name('posts.comment');
 Route::get('/posts/edit/{id}',[PostController::class,'edit'])->name('posts.edit');

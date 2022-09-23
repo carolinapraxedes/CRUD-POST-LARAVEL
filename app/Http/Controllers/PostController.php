@@ -13,7 +13,8 @@ class PostController extends Controller
 {
     public function index(){
         $posts=Post::latest()->paginate(4);
-
+        
+        
         return view('admin.posts.index',compact('posts'));
     }
 
@@ -24,6 +25,7 @@ class PostController extends Controller
     public function store(StoreUpdatePost $request){
         //lógica para criar um novo post
         Post::create($request->all());
+       
 
         return redirect()->route('posts.index');
     }
@@ -31,6 +33,10 @@ class PostController extends Controller
     public function show($id){
         $post= Post::find($id);
         $comentarios=$post->comments;
+
+        $teste = Comments::where('comments')
+            ->orderBy("id","desc");
+        
         
         if(!$post){
             return redirect()->route('posts.index');
@@ -71,7 +77,33 @@ class PostController extends Controller
     }
 
     public function search(Request $request){
-        dd($request->search);
+        $filters = $request->except('_token');
+        $search = $request->search;
+        
+        
+
+        if($search){
+            $posts=Post::where('title','LIKE',"%{$request->search}%")
+            //->orWhere('context','LIKE',"%{$request->search}%")         
+            ->orderBy("id","desc")
+            ->paginate(4);
+
+           
+            if(count($posts->items(4))===0){
+                return redirect()
+                ->route('posts.index')
+                ->with('message','POST NOT FOUND');
+            }
+
+            return view('admin.posts.index',compact('search','filters','posts'));
+
+        }else{
+            return redirect()
+            ->route('posts.index')
+            ->with('message','DIGIT THE CARACTERE');
+        } 
     }
+    
+
    
 }
